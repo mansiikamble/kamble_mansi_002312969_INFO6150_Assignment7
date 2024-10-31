@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f4f8;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+        h2 {
+            margin-bottom: 20px;
+            color: #4a90e2;
+        }
+        input {
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 250px;
+            transition: border-color 0.3s;
+        }
+        input:focus {
+            border-color: #4a90e2;
+            outline: none;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:disabled {
+            background-color: #ccc;
+        }
+        button:hover:not(:disabled) {
+            background-color: #357ab8;
+        }
+        .error {
+            color: red;
+            font-size: 12px;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h2>Login Page</h2>
+    <input type="email" id="email" placeholder="Email">
+    <div class="error" id="emailError"></div>
+    
+    <input type="text" id="username" placeholder="User Name">
+    <div class="error" id="usernameError"></div>
+    
+    <input type="password" id="password" placeholder="Password">
+    <div class="error" id="passwordError"></div>
+    
+    <input type="password" id="confirmPassword" placeholder="Confirm Password">
+    <div class="error" id="confirmPasswordError"></div>
+    
+    <button id="loginButton" disabled>Login</button>
+
+    <script>
+        const validateField = (field, errorId, regex, minLen, maxLen) => {
+            const value = $(field).val().trim();
+            const errorMsg = [];
+            if (!value) errorMsg.push("This field cannot be empty.");
+            if (value.length < minLen || value.length > maxLen) 
+                errorMsg.push(`Length must be between ${minLen} and ${maxLen} characters.`);
+            if (!regex.test(value)) errorMsg.push("Invalid format.");
+            $(errorId).text(errorMsg.join(" "));
+            return errorMsg.length === 0;
+        };
+
+        $(document).ready(() => {
+            $('#email, #username, #password, #confirmPassword').on('input', () => {
+                const emailValid = validateField('#email', '#emailError', /^[a-zA-Z0-9._%+-]+@northeastern\.edu$/, 5, 50);
+                const usernameValid = validateField('#username', '#usernameError', /^[a-zA-Z0-9]+$/, 3, 20);
+                const passwordValid = validateField('#password', '#passwordError', /^[a-zA-Z0-9!@#$%^&*]+$/, 6, 20);
+                const confirmPasswordValid = $('#password').val() === $('#confirmPassword').val();
+                $('#confirmPasswordError').text(confirmPasswordValid ? "" : "Passwords do not match.");
+
+                $('#loginButton').prop('disabled', !(emailValid && usernameValid && passwordValid && confirmPasswordValid));
+            });
+
+            $('#loginButton').on('click', () => {
+                window.localStorage.setItem('username', $('#username').val());
+                window.location.href = 'calculator.html';
+            });
+        });
+    </script>
+</body>
+</html>

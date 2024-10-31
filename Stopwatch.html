@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stopwatch</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f4f8;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        h1 {
+            margin-bottom: 20px;
+            color: #4a90e2;
+        }
+        #time {
+            font-size: 48px;
+            margin-bottom: 20px;
+            border: 2px solid #4a90e2;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: white;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            background-color: #4a90e2;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #357ab8;
+        }
+        input[type="date"] {
+            margin: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Stopwatch Application</h1>
+    <div id="time">00:00:00</div>
+    <input type="date" id="datePicker" />
+    <div>
+        <button id="startButton">Start</button>
+        <button id="stopButton">Stop</button>
+        <button id="resetButton">Reset</button>
+    </div>
+
+    <script>
+        let timer;
+        let elapsedSeconds = 0;
+        const timeLabel = document.getElementById('time');
+
+        const updateTimeDisplay = () => {
+            const hours = String(Math.floor(elapsedSeconds / 3600)).padStart(2, '0');
+            const minutes = String(Math.floor((elapsedSeconds % 3600) / 60)).padStart(2, '0');
+            const seconds = String(elapsedSeconds % 60).padStart(2, '0');
+            timeLabel.textContent = `${hours}:${minutes}:${seconds}`;
+        };
+
+        const startTimer = () => {
+            return new Promise((resolve) => {
+                timer = setInterval(() => {
+                    elapsedSeconds++;
+                    updateTimeDisplay();
+                }, 1000);
+                resolve();
+            });
+        };
+
+        const stopTimer = () => {
+            return new Promise((resolve) => {
+                clearInterval(timer);
+                resolve();
+            });
+        };
+
+        document.getElementById('startButton').addEventListener('click', async () => {
+            await startTimer();
+        });
+
+        document.getElementById('stopButton').addEventListener('click', async () => {
+            await stopTimer();
+        });
+
+        document.getElementById('resetButton').addEventListener('click', () => {
+            clearInterval(timer);
+            elapsedSeconds = 0;
+            updateTimeDisplay();
+        });
+
+        const setCurrentDate = () => {
+            const currentDate = new Date().toISOString().split('T')[0];
+            document.getElementById('datePicker').value = currentDate;
+        };
+
+        window.onload = setCurrentDate;
+    </script>
+</body>
+</html>
